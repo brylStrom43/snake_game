@@ -1,26 +1,110 @@
+
+
+.game-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 4vw;
+    width: 100%;
+    max-width: 1200px;
+    box-sizing: border-box;
+}
+
+
+@media (max-width: 900px) {
+    .game-layout {
+        flex-direction: column;
+        align-items: center;
+        gap: 4vw;
+    }
+    .score-container {
+        flex-direction: row;
+        justify-content: center;
+        min-width: unset;
+        max-width: 100vw;
+        width: 100%;
+    }
+    #board {
+        width: 90vw;
+        height: 90vw;
+        max-width: 98vw;
+        max-height: 98vw;
+        min-width: 180px;
+        min-height: 180px;
+    }
+}
+
+.score-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+    margin-bottom: 0;
+    min-width: 120px;
+    max-width: 200px;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+}
+.scoreBox, #scoreBox {
+    font-size: clamp(1rem, 1.7vw, 1.3rem);
+    font-weight: bold;
+    color: #222;
+    background: #ffe066;
+    padding: 6px 18px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    letter-spacing: 1px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+.hiscoreBox, #hiscoreBox {
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    font-weight: bold;
+    color: #fff;
+    background: #4b2e83;
+    padding: 8px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    letter-spacing: 1px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
 *{
     margin: 0;
     padding: 0;
   
 }
-body{
-    background:url(../img/bg.jpg);
+.body{
+    background: url(../img/bg.jpg) no-repeat center center fixed;
     min-height: 100vh;
-    background-size: 100vw 100vh;
-    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100vw;
+    box-sizing: border-box;
+    padding: 2vw;
 }
 
 #board{
     background: linear-gradient(rgb(120, 207, 120) , rgb(199, 199, 117));
-    width: 90vmin;
-    height: 92vmin;
+    width: 80vmin;
+    height: 80vmin;
+    max-width: 96vw;
+    max-height: 70vw;
+    min-width: 260px;
+    min-height: 260px;
     border: 2px solid black ;
     display: grid;
     grid-template-columns: repeat(18, 1fr);
     grid-template-rows: repeat(18 , 1fr);
+    box-sizing: border-box;
 }
 
 .head

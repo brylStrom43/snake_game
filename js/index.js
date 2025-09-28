@@ -73,7 +73,8 @@ function gameEngine()
         snakeArr.unshift({x: snakeArr[0].x + direction.x, y: snakeArr[0].y + direction.y});
         let a = 2;  
         let b = 16;
-        food = {x: Math.round(a + (b-a)* Math.random()), y: Math.round(a + (b-a)* Math.random())}
+        food = {x: Math.round(a + (b-a)* Math.random()), y: Math.round(a + (b-a)* Math.random())};
+        console.log('New food position:', food);
     }       
     //Moving the snake
     for (let i = snakeArr.length - 2; i >= 0; i--) {    
