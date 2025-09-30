@@ -64,6 +64,7 @@ function gameEngine()
     if(snakeArr[0].y === food.y && snakeArr[0].x === food.x){
         foodSound.play();
         score += 1;     
+        showToast('+1 point');
         if(score>hiscoreval){   
             hiscoreval = score; 
             localStorage.setItem("hiscore", JSON.stringify(hiscoreval));
@@ -76,6 +77,16 @@ function gameEngine()
         food = {x: Math.round(a + (b-a)* Math.random()), y: Math.round(a + (b-a)* Math.random())};
         console.log('New food position:', food);
     }       
+// Toast notification function
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 1200);
+}
     //Moving the snake
     for (let i = snakeArr.length - 2; i >= 0; i--) {    
         snakeArr[i+1] = {...snakeArr[i]};

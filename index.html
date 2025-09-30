@@ -5,19 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SnakeMania</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .entry-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: url('img/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .entry-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: #4b2e83;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        .play-btn {
+            font-size: clamp(1.2rem, 2vw, 2rem);
+            padding: 1rem 3rem;
+            background: linear-gradient(90deg, #ffe066 60%, #4b2e83 100%);
+            color: #222;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            transition: background 0.3s, color 0.3s, transform 0.2s;
+        }
+        .play-btn:hover {
+            background: linear-gradient(90deg, #4b2e83 60%, #ffe066 100%);
+            color: #fff;
+            transform: scale(1.05);
+        }
+        @media (max-width: 600px) {
+            .entry-title {
+                font-size: 2rem;
+            }
+            .play-btn {
+                font-size: 1rem;
+                padding: 0.7rem 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="body">
-        <div class="game-layout">
-            <div id="board">
-
-            </div>
-            <div class="score-container">
-                <div id="scoreBox">Score: 0</div>
-                <div id="hiscoreBox">HiScore: 0</div>
-            </div>
-        </div>
+    <div class="entry-container">
+        <div class="entry-title">SnakeMania</div>
+        <button class="play-btn" onclick="window.location.href='game.html'">Play</button>
     </div>
 </body>
-<script src="js/index.js"></script>
 </html>
