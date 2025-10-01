@@ -8,12 +8,18 @@ A classic Snake game built with HTML, CSS, and JavaScript. Play, grow your snake
 - Score and high score tracking
 - Simple, intuitive controls
 - High score saved in browser
+- Toast notification for each point earned
+- Modern landing page with Play button
 
 ## How to Play
 - Use arrow keys to control the snake's direction
 - Eat the yellow food to grow longer and increase your score
+- A "+1 point" toast will appear each time you earn a point
 - Avoid colliding with the walls or your own tail
 - Try to beat your high score!
+
+### Landing Page
+- The game starts with a modern landing page. Click the "Play" button to begin playing.
 
 ### Mobile Controls
 - On mobile, swipe gestures or on-screen buttons can be added for direction control (not included by default)
