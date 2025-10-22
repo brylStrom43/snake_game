@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Simple snake icon: head + body circles -->
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#7ad97a" />
+      <stop offset="1" stop-color="#2dbf4a" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="none"/>
+  <circle cx="60" cy="100" r="18" fill="url(#g)" />
+  <circle cx="90" cy="100" r="16" fill="#57c35a" />
+  <circle cx="120" cy="100" r="14" fill="#3fb94b" />
+  <circle cx="150" cy="100" r="12" fill="#2dbf4a" />
+  <!-- head -->
+  <path d="M42 88 C52 70, 78 66, 90 84 C95 92, 90 106, 80 108 C68 110, 54 102, 42 88 Z" fill="#2b8a3b" />
+  <circle cx="74" cy="92" r="3" fill="#000" />
+</svg>

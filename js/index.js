@@ -19,6 +19,59 @@ let scoreBox = document.getElementById('scoreBox');
 let board = document.getElementById('board');
 let snakeElement;
 let foodElement;
+// --- localStorage helpers & keys ---
+const HISCORE_KEY = 'snake_hiscore';
+
+function _getItem(key, defaultValue = null) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (raw === null) return defaultValue;
+        return JSON.parse(raw);
+    } catch (e) {
+        console.warn('localStorage read error for', key, e);
+        return defaultValue;
+    }
+}
+
+function _setItem(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+        console.warn('localStorage write error for', key, e);
+    }
+}
+
+function saveHiscore(score) {
+    _setItem(HISCORE_KEY, score);
+}
+
+function loadHiscore() {
+    return _getItem(HISCORE_KEY, 0);
+}
+
+// initialize hiscore from storage
+hiscoreval = loadHiscore();
+if (hiscoreBox) hiscoreBox.innerHTML = 'HiScore: ' + hiscoreval;
+// --- history helpers ---
+const HISTORY_KEY = 'snake_history';
+
+function loadHistory(){
+    return _getItem(HISTORY_KEY, []);
+}
+
+function saveHistory(arr){
+    _setItem(HISTORY_KEY, arr);
+}
+
+function pushHistoryEntry(name, score){
+    try{
+        const entry = { name: name || 'Unknown', score: score, date: new Date().toISOString() };
+        const h = loadHistory();
+        h.push(entry);
+        // keep last 100 entries at most
+        saveHistory(h.slice(-100));
+    }catch(e){ console.warn('Could not save history', e); }
+}
 //Game functions
 
 function main(ctime) 
@@ -55,10 +108,24 @@ function gameEngine()
         gameOverSound.play();
         musicSound.pause(); 
         direction = {x: 0, y: 0};       
-        alert("Game Over. Press any key to play again!");               
+        // Show game over message
+        alert("Game Over. Press any key to play again!");
+
+        // Record score in history before resetting (only if player scored)
+        try {
+            if (score > 0) {
+                // Player name is stored by the landing page under key 'snake_player'
+                const playerName = _getItem('snake_player', null);
+                pushHistoryEntry(playerName, score);
+            }
+        } catch (e) {
+            console.warn('Failed to record game history', e);
+        }
+
+        // Reset snake and resume music
         snakeArr = [{x: 13, y: 15}];    
         musicSound.play();
-        score = 0;        
+        score = 0;
     }   
     //If you have eaten the food, increment the score and regenerate the food
     if(snakeArr[0].y === food.y && snakeArr[0].x === food.x){
@@ -67,8 +134,8 @@ function gameEngine()
         showToast('+1 point');
         if(score>hiscoreval){   
             hiscoreval = score; 
-            localStorage.setItem("hiscore", JSON.stringify(hiscoreval));
-            hiscoreBox.innerHTML = "HiScore: " + hiscoreval; 
+            saveHiscore(hiscoreval);
+            if (hiscoreBox) hiscoreBox.innerHTML = "HiScore: " + hiscoreval; 
         }       
         scoreBox.innerHTML = "Score: " + score; 
         snakeArr.unshift({x: snakeArr[0].x + direction.x, y: snakeArr[0].y + direction.y});

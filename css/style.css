@@ -1,35 +1,37 @@
-.toast {
-    position: fixed;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #4b2e83;
-    color: #ffe066;
-    font-size: 1.5rem;
-    font-weight: bold;
-    padding: 12px 32px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1000;
-    transition: opacity 0.4s, top 0.4s;
-}
-.toast.show {
-    opacity: 1;
-    top: 80px;
-}
-
 
 .game-layout {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center; /* vertically center contents */
+    justify-content: center; /* center the board horizontally */
     gap: 4vw;
     width: 100%;
     max-width: 1200px;
     box-sizing: border-box;
+    position: relative; /* allow absolute-positioned score box */
 }
+
+/* Header and entry/login styles */
+.site-header{
+    width:100%;
+    max-width:1200px;
+    margin: 1rem auto 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 1rem;
+}
+.site-title{ font-weight:bold; color:#4b2e83; font-size:1.2rem }
+.site-header{ padding: 0.4rem 1rem; }
+.site-nav .nav-link{ margin-left:1rem; color:#333; text-decoration:none }
+
+.entry-container{ width:100%; display:flex; justify-content:center; align-items:center; }
+.login-box{ background: rgba(255,255,255,0.92); padding:1.5rem; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); width:320px; max-width:90%; text-align:center }
+.login-box label{ display:block; margin-bottom:6px; text-align:left; color:#222 }
+.login-box input{ width:100%; padding:8px 10px; margin-bottom:8px; border-radius:6px; border:1px solid #ddd; background: #fff }
+.login-actions{ display:flex; gap:10px; justify-content:center }
+.help-text{ font-size:0.9rem; color:#666; margin-top:6px }
+.help-text.error{ color:#b00020 }
 
 
 @media (max-width: 900px) {
@@ -77,8 +79,9 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.10);
     letter-spacing: 1px;
     text-align: center;
-    width: 100%;
-    box-sizing: border-box;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 .hiscoreBox, #hiscoreBox {
     font-size: clamp(1.1rem, 2vw, 1.5rem);
@@ -91,30 +94,34 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     letter-spacing: 1px;
     text-align: center;
-    width: 100%;
-    box-sizing: border-box;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
-*{
-    margin: 0;
-    padding: 0;
-  
+/* Toast styling (single block) */
+.toast {
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4b2e83;
+    color: #ffe066;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 12px 32px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1000;
+    transition: opacity 0.4s, top 0.4s;
 }
-.body{
-    background: url(../img/bg.jpg) no-repeat center center fixed;
-    min-height: 100vh;
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    box-sizing: border-box;
-    padding: 2vw;
+.toast.show {
+    opacity: 1;
+    top: 80px;
 }
 
-#board{
-    background: linear-gradient(rgb(120, 207, 120) , rgb(199, 199, 117));
+#board {
     width: 80vmin;
     height: 80vmin;
     max-width: 96vw;
@@ -141,6 +148,20 @@
 .snake
 {
     background-color: purple;
+}
+
+/* Decorative snake image shown bottom-right on game page. File: img/snake.png */
+.decor-snake{
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    z-index: 900;
+    pointer-events: none;
+}
+.decor-snake img{ display:block; width:120px; height:auto; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25)); }
+
+@media (max-width: 600px){
+    .decor-snake img{ width: 80px; }
 }
 
 

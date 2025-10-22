@@ -53,9 +53,99 @@
     </style>
 </head>
 <body>
+    <!-- Header with navigation (Dashboard link) -->
+    <header class="site-header">
+        <div class="site-title">SnakeMania</div>
+        <nav class="site-nav">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="game.html" class="nav-link">Play (Quick)</a>
+        </nav>
+    </header>
+
+    <!-- Entry container: login box where user enters name before playing -->
     <div class="entry-container">
-        <div class="entry-title">SnakeMania</div>
-        <button class="play-btn" onclick="window.location.href='game.html'">Play</button>
+        <div class="login-box">
+            <h1 class="entry-title">Welcome</h1>
+
+            <!--
+                Name input rules (regex used below):
+                - allowed characters: letters, numbers, underscore
+                - length: 3 to 16 characters
+                Regex: /^[A-Za-z0-9_]{3,16}$/
+            -->
+            <label for="playerName">Enter your name</label>
+            <input id="playerName" type="text" placeholder="Player_01" aria-label="Player name" />
+            <div id="nameHelp" class="help-text">Use letters, numbers or underscore (3-16 chars).</div>
+            <div class="login-actions">
+                <button id="saveNameBtn" class="play-btn">Save name</button>
+                <button id="playBtn" class="play-btn" disabled>Play</button>
+            </div>
+            <div id="savedMsg" class="help-text" aria-live="polite"></div>
+        </div>
     </div>
+
+    <script>
+    // --- Entry page scripts: validate name and save to localStorage ---
+    (function(){
+        const NAME_KEY = 'snake_player';
+        const nameInput = document.getElementById('playerName');
+        const saveBtn = document.getElementById('saveNameBtn');
+        const playBtn = document.getElementById('playBtn');
+        const help = document.getElementById('nameHelp');
+        const savedMsg = document.getElementById('savedMsg');
+
+        // Regex for allowed names: letters, numbers, underscore, 3-16 chars
+        const NAME_RE = /^[A-Za-z0-9_]{3,16}$/;
+
+        // Enable play if stored name exists or input matches regex
+        function updatePlayState(){
+            const stored = localStorage.getItem(NAME_KEY);
+            if(stored && NAME_RE.test(JSON.parse(stored))){
+                playBtn.disabled = false;
+                savedMsg.textContent = 'Loaded saved name: ' + JSON.parse(stored);
+                nameInput.value = JSON.parse(stored);
+            } else {
+                playBtn.disabled = !NAME_RE.test(nameInput.value.trim());
+                savedMsg.textContent = '';
+            }
+        }
+
+        // Validate on input
+        nameInput.addEventListener('input', ()=>{
+            const val = nameInput.value.trim();
+            if(NAME_RE.test(val)){
+                help.textContent = 'Name looks good.';
+                help.classList.remove('error');
+            } else {
+                help.textContent = 'Use letters, numbers or underscore (3-16 chars).';
+                help.classList.add('error');
+            }
+            updatePlayState();
+        });
+
+        // Save name button
+        saveBtn.addEventListener('click', ()=>{
+            const val = nameInput.value.trim();
+            if(!NAME_RE.test(val)){
+                help.textContent = 'Invalid name. Please follow the rules.';
+                help.classList.add('error');
+                return;
+            }
+            localStorage.setItem(NAME_KEY, JSON.stringify(val));
+            savedMsg.textContent = 'Name saved: ' + val;
+            playBtn.disabled = false;
+        });
+
+        // Play button: save if needed and go to game
+        playBtn.addEventListener('click', ()=>{
+            const val = nameInput.value.trim();
+            if(NAME_RE.test(val)) localStorage.setItem(NAME_KEY, JSON.stringify(val));
+            window.location.href = 'game.html';
+        });
+
+        // Run once on load to set state
+        updatePlayState();
+    })();
+    </script>
 </body>
 </html>

@@ -6,8 +6,16 @@
     <title>SnakeMania</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <div class="body">
+<body style="background-color:  #5fce1f">
+    <div class="body" >
+        <header class="site-header">
+            <div class="site-title">SnakeMania</div>
+            <nav class="site-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+            </nav>
+        </header>
+
         <div class="game-layout">
             <div id="board">
 
@@ -18,6 +26,10 @@
             </div>
         </div>
         <div id="toast" class="toast">+1 point</div>
+        <!-- Decorative snake image placed bottom-right of the game area -->
+        <div class="decor-snake" aria-hidden="true">
+            <img src="img/snake.svg" alt="snake" onerror="this.style.display='none'" />
+        </div>
     </div>
 </body>
 <script src="js/index.js"></script>

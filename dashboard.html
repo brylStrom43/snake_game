@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard - SnakeMania</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .dashboard {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        .dashboard h1{ margin-bottom: 1rem }
+        .history-list { width: 100%; max-width: 760px; }
+        .history-item { display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid rgba(0,0,0,0.06); }
+        .clear-btn { margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-title">SnakeMania</div>
+        <nav class="site-nav">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="game.html" class="nav-link">Play</a>
+        </nav>
+    </header>
+
+    <main class="dashboard">
+        <h1>Score History</h1>
+        <p class="help-text">This shows your past game scores stored locally in your browser.</p>
+        <div class="history-list" id="historyList"></div>
+        <button id="clearHistory" class="play-btn clear-btn">Clear History</button>
+    </main>
+
+    <script>
+    // Dashboard script: loads `snake_history` from localStorage and shows it
+    (function(){
+        const HISTORY_KEY = 'snake_history';
+        const list = document.getElementById('historyList');
+        const clearBtn = document.getElementById('clearHistory');
+
+        function loadHistory(){
+            let raw = localStorage.getItem(HISTORY_KEY);
+            if(!raw) return [];
+            try{ return JSON.parse(raw); } catch(e){ return []; }
+        }
+
+        function render(){
+            const data = loadHistory();
+            list.innerHTML = '';
+            if(data.length === 0){ list.innerHTML = '<p class="help-text">No history yet. Play some games!</p>'; return; }
+            data.slice().reverse().forEach(item=>{
+                const el = document.createElement('div');
+                el.className = 'history-item';
+                el.innerHTML = `<div>${item.name || 'Unknown'}</div><div>${item.score} pts — ${new Date(item.date).toLocaleString()}</div>`;
+                list.appendChild(el);
+            });
+        }
+
+        clearBtn.addEventListener('click', ()=>{
+            if(!confirm('Clear score history?')) return;
+            localStorage.removeItem(HISTORY_KEY);
+            render();
+        });
+
+        render();
+    })();
+    </script>
+</body>
+</html>
