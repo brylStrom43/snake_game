@@ -5,19 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Dashboard - SnakeMania</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .dashboard {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem;
-        }
-        .dashboard h1{ margin-bottom: 1rem }
-        .history-list { width: 100%; max-width: 760px; }
-        .history-item { display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid rgba(0,0,0,0.06); }
-        .clear-btn { margin-top: 1rem; }
-    </style>
 </head>
 <body>
     <header class="site-header">
@@ -29,18 +16,66 @@
     </header>
 
     <main class="dashboard">
-        <h1>Score History</h1>
-        <p class="help-text">This shows your past game scores stored locally in your browser.</p>
-        <div class="history-list" id="historyList"></div>
-        <button id="clearHistory" class="play-btn clear-btn">Clear History</button>
+        <section class="dashboard-hero">
+            <div>
+                <h1 class="dashboard-title">Your Score Dashboard</h1>
+                <p class="help-text">A snapshot of your recent games, best scores and progress. Data is stored locally in your browser.</p>
+            </div>
+            <div class="hero-actions">
+                <button id="exportCsv" class="btn btn-secondary">Export CSV</button>
+                <button id="clearHistory" class="btn btn-primary">Clear History</button>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card" id="statGames">
+                <div class="stat-icon">🎮</div>
+                <div class="stat-body">
+                    <div class="stat-value" id="gamesPlayed">0</div>
+                    <div class="stat-label">Games Played</div>
+                </div>
+            </div>
+            <div class="stat-card" id="statBest">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-body">
+                    <div class="stat-value" id="bestScore">0</div>
+                    <div class="stat-label">Best Score</div>
+                </div>
+            </div>
+            <div class="stat-card" id="statLast">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-body">
+                    <div class="stat-value" id="lastScore">—</div>
+                    <div class="stat-label">Last Score</div>
+                </div>
+            </div>
+            <div class="stat-card" id="statRecent">
+                <div class="stat-icon">📈</div>
+                <div class="stat-body">
+                    <div class="stat-value" id="avgScore">—</div>
+                    <div class="stat-label">Average (last 5)</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="leaderboard">
+            <h2>Recent Scores</h2>
+            <div class="history-list" id="historyList" aria-live="polite"></div>
+            <div class="leaderboard-note help-text">Top recent games are shown here. Click export to download CSV.</div>
+        </section>
     </main>
 
     <script>
-    // Dashboard script: loads `snake_history` from localStorage and shows it
     (function(){
         const HISTORY_KEY = 'snake_history';
         const list = document.getElementById('historyList');
         const clearBtn = document.getElementById('clearHistory');
+        const exportBtn = document.getElementById('exportCsv');
+
+        const gamesPlayedEl = document.getElementById('gamesPlayed');
+        const bestScoreEl = document.getElementById('bestScore');
+        const lastScoreEl = document.getElementById('lastScore');
+        const avgScoreEl = document.getElementById('avgScore');
 
         function loadHistory(){
             let raw = localStorage.getItem(HISTORY_KEY);
@@ -48,23 +83,83 @@
             try{ return JSON.parse(raw); } catch(e){ return []; }
         }
 
+        function computeStats(items){
+            const count = items.length;
+            const best = items.reduce((m, it)=> Math.max(m, it.score||0), 0);
+            const last = items.length ? items[items.length-1].score : null;
+            const recent = items.slice(-5);
+            const avg = recent.length ? Math.round(recent.reduce((s,i)=>s+(i.score||0),0)/recent.length) : null;
+            return { count, best, last, avg };
+        }
+
         function render(){
-            const data = loadHistory();
+            const data = loadHistory() || [];
+            // data stored oldest-first; show newest first
+            const rev = data.slice().reverse();
+
+            // stats
+            const stats = computeStats(data);
+            gamesPlayedEl.textContent = stats.count || 0;
+            bestScoreEl.textContent = stats.best || 0;
+            lastScoreEl.textContent = stats.last !== null ? stats.last : '—';
+            avgScoreEl.textContent = stats.avg !== null ? stats.avg : '—';
+
             list.innerHTML = '';
-            if(data.length === 0){ list.innerHTML = '<p class="help-text">No history yet. Play some games!</p>'; return; }
-            data.slice().reverse().forEach(item=>{
+            if(rev.length === 0){
+                const empty = document.createElement('div');
+                empty.className = 'history-empty';
+                empty.innerHTML = `<div class="empty-illus">🐍</div><div class="help-text">No games yet — play and your sessions will appear here.</div>`;
+                list.appendChild(empty);
+                return;
+            }
+
+            // show up to 20 recent entries
+            rev.slice(0, 20).forEach((item, idx)=>{
                 const el = document.createElement('div');
                 el.className = 'history-item';
-                el.innerHTML = `<div>${item.name || 'Unknown'}</div><div>${item.score} pts — ${new Date(item.date).toLocaleString()}</div>`;
+                const rank = idx + 1;
+                const when = item.date ? new Date(item.date).toLocaleString() : '';
+                el.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(90deg,#fff2,#fff0);display:flex;align-items:center;justify-content:center;font-weight:700">${rank}</div>
+                        <div>
+                            <div style="font-weight:700">${(item.name||'Unknown')}</div>
+                            <div class="meta">${when}</div>
+                        </div>
+                    </div>
+                    <div style="text-align:right; min-width:120px;">
+                        <div style="font-weight:900; font-size:1.05rem">${item.score} pts</div>
+                    </div>
+                `;
                 list.appendChild(el);
             });
         }
 
-        clearBtn.addEventListener('click', ()=>{
-            if(!confirm('Clear score history?')) return;
+        function clearHistory(){
+            if(!confirm('Clear score history? This cannot be undone.')) return;
             localStorage.removeItem(HISTORY_KEY);
             render();
-        });
+        }
+
+        function exportCsv(){
+            const data = loadHistory();
+            if(!data || data.length === 0){ alert('No data to export'); return; }
+            const rows = [['name','score','date']];
+            data.forEach(r=> rows.push([r.name||'', r.score||0, r.date||'']));
+            const csv = rows.map(r => r.map(c=> '"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'snake_history.csv';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        clearBtn.addEventListener('click', clearHistory);
+        exportBtn && exportBtn.addEventListener('click', exportCsv);
 
         render();
     })();

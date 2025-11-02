@@ -135,9 +135,21 @@ function gameEngine()
         if(score>hiscoreval){   
             hiscoreval = score; 
             saveHiscore(hiscoreval);
-            if (hiscoreBox) hiscoreBox.innerHTML = "HiScore: " + hiscoreval; 
+            if (hiscoreBox) {
+                hiscoreBox.innerHTML = "HiScore: " + hiscoreval;
+                // visual highlight for new hiscore
+                hiscoreBox.classList.add('hiscore-pop');
+                setTimeout(()=> hiscoreBox.classList.remove('hiscore-pop'), 1000);
+            }
         }       
         scoreBox.innerHTML = "Score: " + score; 
+        // trigger a small pop animation on the score box
+        try{
+            if(scoreBox){
+                scoreBox.classList.add('score-pop');
+                setTimeout(()=> scoreBox.classList.remove('score-pop'), 700);
+            }
+        }catch(e){ /* ignore */ }
         snakeArr.unshift({x: snakeArr[0].x + direction.x, y: snakeArr[0].y + direction.y});
         let a = 2;  
         let b = 16;
