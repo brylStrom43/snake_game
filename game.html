@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SnakeMania</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -17,21 +16,56 @@
             </nav>
         </header>
 
-        <div class="game-layout">
-            <div id="board">
+        <main class="game-layout" role="main" aria-label="Snake game">
+            <div id="board" tabindex="0" aria-label="Game board"></div>
 
-            </div>
-            <div class="score-container">
-                <div id="scoreBox">Score: 0</div>
-                <div id="hiscoreBox">HiScore: 0</div>
-            </div>
-        </div>
-        <div id="toast" class="toast">+1 point</div>
-        <!-- Decorative snake image placed bottom-right of the game area -->
+            <aside class="score-container" aria-hidden="false">
+                <div id="scoreBox" class="scoreBox">Score: 0</div>
+                <div id="hiscoreBox" class="hiscoreBox">HiScore: 0</div>
+
+                <div class="controls">
+                    <button id="pauseBtn" class="btn btn-secondary">Pause</button>
+                    <button id="soundBtn" class="btn btn-secondary">Sound: On</button>
+                </div>
+
+                <label class="control-row">
+                    <div class="help-text">Speed</div>
+                    <input id="speedRange" type="range" min="2" max="12" step="1" value="4" />
+                </label>
+
+                <div class="mobile-controls" aria-hidden="false" role="region" aria-label="On screen controls">
+                    <button data-dir="up" class="dir-btn">▲</button>
+                    <div>
+                        <button data-dir="left" class="dir-btn">◀</button>
+                        <button data-dir="down" class="dir-btn">▼</button>
+                        <button data-dir="right" class="dir-btn">▶</button>
+                    </div>
+                </div>
+                <div class="help-text" style="margin-top:8px">Tip: Use arrow keys or on-screen controls. Game auto-starts in 1s.</div>
+            </aside>
+        </main>
+
+        <div id="toast" class="toast" aria-live="polite">+1 point</div>
+
         <div class="decor-snake" aria-hidden="true">
             <img src="img/snake.svg" alt="snake" onerror="this.style.display='none'" />
         </div>
+
+        <!-- Game over taunt modal -->
+        <div id="gameOverModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+            <div class="modal-panel">
+                <img id="tauntImg" src="img/taunt.png" alt="taunt" onerror="this.style.display='none'"/>
+                <h3 id="tauntText">Ouch! Better luck next time.</h3>
+                <p id="finalScoreText" class="help-text"></p>
+                <div class="modal-actions">
+                    <button id="replayBtn" class="btn btn-primary">Play Again</button>
+                    <a href="dashboard.html" class="btn btn-secondary">View Dashboard</a>
+                </div>
+            </div>
+        </div>
+
     </div>
-</body>
+
 <script src="js/index.js"></script>
+</body>
 </html>

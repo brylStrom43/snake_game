@@ -5,113 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SnakeMania</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-       
-    </style>
 </head>
 <body>
-    
     <header class="site-header">
         <div class="site-title">SNAKE MANIA</div>
         <nav class="site-nav">
             <a href="dashboard.html" class="nav-link">Dashboard</a>
-            <a href="game.html" class="nav-link">Play (Quick)</a>
-            <a href="game.html" class="nav-link">Leaderboard</a>
+            <a href="game.html" class="nav-link">Play</a>
         </nav>
     </header>
 
-    <!-- Entry container: login box where user enters name before playing -->
     <div class="entry-container">
         <div class="login-box">
             <h1 id="entryTitle" class="entry-title">Welcome</h1>
 
-            <!--
-                Name input rules (regex used below):
-                - allowed characters: letters, numbers, underscore
-                - length: 3 to 16 characters
-                Regex: /^[A-Za-z0-9_]{3,16}$/
-            -->
             <label for="playerName">Enter your name</label>
             <input id="playerName" type="text" placeholder="Player_01" aria-label="Player name" />
             <div id="nameHelp" class="help-text">Use letters, numbers or underscore (3-16 chars).</div>
+
             <div class="login-actions">
-                <button id="saveNameBtn" class="btn btn-secondary">Save name</button>
                 <button id="playBtn" class="btn btn-primary" disabled>Play</button>
             </div>
         </div>
     </div>
 
-    <script>
-    // --- Entry page scripts: validate name and save to localStorage ---
-    (function(){
-        const NAME_KEY = 'snake_player';
-        const nameInput = document.getElementById('playerName');
-        const saveBtn = document.getElementById('saveNameBtn');
-        const playBtn = document.getElementById('playBtn');
+<script>
+(function(){
+    const NAME_RE = /^[A-Za-z0-9_]{3,16}$/;
+    const nameInput = document.getElementById('playerName');
+    const playBtn = document.getElementById('playBtn');
     const help = document.getElementById('nameHelp');
     const entryTitle = document.getElementById('entryTitle');
 
-        // Regex for allowed names: letters, numbers, underscore, 3-16 chars
-        const NAME_RE = /^[A-Za-z0-9_]{3,16}$/;
+    function updateEntryTitle(name){
+        entryTitle.textContent = name ? 'Welcome, ' + name : 'Welcome';
+    }
 
-        // Enable play if stored name exists or input matches regex
-        function updateEntryTitle(name){
-            if(name && name.length) entryTitle.textContent = 'Welcome, ' + name;
-            else entryTitle.textContent = 'Welcome';
-        }
-
-        function updatePlayState(){
-            const storedRaw = localStorage.getItem(NAME_KEY);
-            const stored = storedRaw ? JSON.parse(storedRaw) : null;
-            if(stored && NAME_RE.test(stored)){
-                playBtn.disabled = false;
-                nameInput.value = stored;
-                updateEntryTitle(stored);
-            } else {
-                const current = nameInput.value.trim();
-                playBtn.disabled = !NAME_RE.test(current);
-                updateEntryTitle(NAME_RE.test(current) ? current : '');
-            }
-        }
-
-        // Validate on input
-        nameInput.addEventListener('input', ()=>{
-            const val = nameInput.value.trim();
-            if(NAME_RE.test(val)){
-                help.textContent = 'Name looks good.';
-                help.classList.remove('error');
-            } else {
-                help.textContent = 'Use letters, numbers or underscore (3-16 chars).';
-                help.classList.add('error');
-            }
-            updatePlayState();
-        });
-
-        // Save name button
-        saveBtn.addEventListener('click', ()=>{
-            const val = nameInput.value.trim();
-            if(!NAME_RE.test(val)){
-                help.textContent = 'Invalid name. Please follow the rules.';
-                help.classList.add('error');
-                return;
-            }
-            localStorage.setItem(NAME_KEY, JSON.stringify(val));
-            help.textContent = 'Name saved.';
+    nameInput.addEventListener('input', ()=>{
+        const val = nameInput.value.trim();
+        if(NAME_RE.test(val)){
+            help.textContent = 'Name looks good.';
             help.classList.remove('error');
             playBtn.disabled = false;
             updateEntryTitle(val);
-        });
+        } else {
+            help.textContent = 'Use letters, numbers or underscore (3-16 chars).';
+            help.classList.add('error');
+            playBtn.disabled = true;
+            updateEntryTitle('');
+        }
+    });
 
-        // Play button: save if needed and go to game
-        playBtn.addEventListener('click', ()=>{
-            const val = nameInput.value.trim();
-            if(NAME_RE.test(val)) localStorage.setItem(NAME_KEY, JSON.stringify(val));
-            window.location.href = 'game.html';
-        });
+    playBtn.addEventListener('click', ()=>{
+        const player = nameInput.value.trim();
+        if(!NAME_RE.test(player)) return;
+        // IMPORTANT: do not persist name to localStorage (no "save name" feature).
+        // Use sessionStorage so name is available in the game during this browser session only.
+        try { sessionStorage.setItem('snake_player', player); } catch(e){ /* ignore */ }
+        window.location.href = 'game.html';
+    });
 
-        // Run once on load to set state
-        updatePlayState();
-    })();
-    </script>
+})();
+</script>
 </body>
 </html>

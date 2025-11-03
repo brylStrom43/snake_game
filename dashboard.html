@@ -19,10 +19,9 @@
         <section class="dashboard-hero">
             <div>
                 <h1 class="dashboard-title">Your Score Dashboard</h1>
-                <p class="help-text">A snapshot of your recent games, best scores and progress. Data is stored locally in your browser.</p>
+                <p class="help-text">A snapshot of recent games, best scores and progress. Data is stored locally (game sessions only).</p>
             </div>
             <div class="hero-actions">
-                <button id="exportCsv" class="btn btn-secondary">Export CSV</button>
                 <button id="clearHistory" class="btn btn-primary">Clear History</button>
             </div>
         </section>
@@ -61,7 +60,7 @@
         <section class="leaderboard">
             <h2>Recent Scores</h2>
             <div class="history-list" id="historyList" aria-live="polite"></div>
-            <div class="leaderboard-note help-text">Top recent games are shown here. Click export to download CSV.</div>
+            <div class="leaderboard-note help-text">Top recent games are shown here. History is capped at 100 entries.</div>
         </section>
     </main>
 
@@ -70,22 +69,31 @@
         const HISTORY_KEY = 'snake_history';
         const list = document.getElementById('historyList');
         const clearBtn = document.getElementById('clearHistory');
-        const exportBtn = document.getElementById('exportCsv');
 
         const gamesPlayedEl = document.getElementById('gamesPlayed');
         const bestScoreEl = document.getElementById('bestScore');
         const lastScoreEl = document.getElementById('lastScore');
         const avgScoreEl = document.getElementById('avgScore');
 
+        function _getItem(key, def = null){
+            try {
+                const raw = localStorage.getItem(key);
+                if(!raw) return def;
+                return JSON.parse(raw);
+            } catch(e){ return def; }
+        }
+
+        function _setItem(key, value){
+            try { localStorage.setItem(key, JSON.stringify(value)); } catch(e){}
+        }
+
         function loadHistory(){
-            let raw = localStorage.getItem(HISTORY_KEY);
-            if(!raw) return [];
-            try{ return JSON.parse(raw); } catch(e){ return []; }
+            return _getItem(HISTORY_KEY, []);
         }
 
         function computeStats(items){
             const count = items.length;
-            const best = items.reduce((m, it)=> Math.max(m, it.score||0), 0);
+            const best = items.reduce((m, it)=> Math.max(m, (it.score||0)), 0);
             const last = items.length ? items[items.length-1].score : null;
             const recent = items.slice(-5);
             const avg = recent.length ? Math.round(recent.reduce((s,i)=>s+(i.score||0),0)/recent.length) : null;
@@ -94,10 +102,7 @@
 
         function render(){
             const data = loadHistory() || [];
-            // data stored oldest-first; show newest first
             const rev = data.slice().reverse();
-
-            // stats
             const stats = computeStats(data);
             gamesPlayedEl.textContent = stats.count || 0;
             bestScoreEl.textContent = stats.best || 0;
@@ -113,7 +118,6 @@
                 return;
             }
 
-            // show up to 20 recent entries
             rev.slice(0, 20).forEach((item, idx)=>{
                 const el = document.createElement('div');
                 el.className = 'history-item';
@@ -141,25 +145,7 @@
             render();
         }
 
-        function exportCsv(){
-            const data = loadHistory();
-            if(!data || data.length === 0){ alert('No data to export'); return; }
-            const rows = [['name','score','date']];
-            data.forEach(r=> rows.push([r.name||'', r.score||0, r.date||'']));
-            const csv = rows.map(r => r.map(c=> '"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'snake_history.csv';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
-        }
-
         clearBtn.addEventListener('click', clearHistory);
-        exportBtn && exportBtn.addEventListener('click', exportCsv);
 
         render();
     })();
