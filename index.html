@@ -1,33 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnakeMania</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SnakeMania</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="site-header">
-        <div class="site-title">SNAKE MANIA</div>
-        <nav class="site-nav">
-            <a href="dashboard.html" class="nav-link">Dashboard</a>
-            <a href="game.html" class="nav-link">Play</a>
-        </nav>
-    </header>
+  <header class="site-header">
+    <a href="index.html" class="brand">
+      <svg class="brand-mark" width="36" height="36" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1">
+            <stop offset="0" stop-color="#7c5cff"/>
+            <stop offset="1" stop-color="#00c2a8"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="20" height="20" rx="5" fill="url(#g)"/>
+        <path d="M7 13c1.5-2 4-2 6.5-1" stroke="#fff" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="brand-title">SnakeMania</span>
+      <span class="brand-tag">play • relax • compete</span>
+    </a>
 
-    <div class="entry-container">
-        <div class="login-box">
-            <h1 id="entryTitle" class="entry-title">Welcome</h1>
+    <nav class="site-nav">
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="game.html" class="nav-link">Play</a>
+    </nav>
+  </header>
 
-            <label for="playerName">Enter your name</label>
-            <input id="playerName" type="text" placeholder="Player_01" aria-label="Player name" />
-            <div id="nameHelp" class="help-text">Use letters, numbers or underscore (3-16 chars).</div>
+  <main class="entry-container">
+    <div class="login-box">
+      <h1 id="entryTitle" class="entry-title">Welcome</h1>
 
-            <div class="login-actions">
-                <button id="playBtn" class="btn btn-primary" disabled>Play</button>
-            </div>
-        </div>
+      <label for="playerName" class="label">Enter your name</label>
+      <input id="playerName" type="text" placeholder="Player_01" aria-label="Player name" />
+      <div id="nameHelp" class="help-text">Use letters, numbers or underscore (3–16 chars).</div>
+
+      <div class="login-actions">
+        <button id="playBtn" class="btn btn-primary" disabled>Play</button>
+      </div>
     </div>
+  </main>
 
 <script>
 (function(){
@@ -44,13 +58,13 @@
     nameInput.addEventListener('input', ()=>{
         const val = nameInput.value.trim();
         if(NAME_RE.test(val)){
-            help.textContent = 'Name looks good.';
-            help.classList.remove('error');
+            // remove the "name looks good" feedback entirely — hide the helper when valid
+            help.style.display = 'none';
             playBtn.disabled = false;
             updateEntryTitle(val);
         } else {
-            help.textContent = 'Use letters, numbers or underscore (3-16 chars).';
-            help.classList.add('error');
+            help.style.display = 'block';
+            help.textContent = 'Use letters, numbers or underscore (3–16 chars).';
             playBtn.disabled = true;
             updateEntryTitle('');
         }
@@ -59,8 +73,6 @@
     playBtn.addEventListener('click', ()=>{
         const player = nameInput.value.trim();
         if(!NAME_RE.test(player)) return;
-        // IMPORTANT: do not persist name to localStorage (no "save name" feature).
-        // Use sessionStorage so name is available in the game during this browser session only.
         try { sessionStorage.setItem('snake_player', player); } catch(e){ /* ignore */ }
         window.location.href = 'game.html';
     });

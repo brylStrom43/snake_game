@@ -1,154 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Dashboard - SnakeMania</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard - SnakeMania</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="site-header">
-        <div class="site-title">SnakeMania</div>
-        <nav class="site-nav">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="game.html" class="nav-link">Play</a>
-        </nav>
-    </header>
+  <header class="site-header header-light">
+    <a href="index.html" class="brand">
+      <svg class="brand-mark" width="36" height="36" viewBox="0 0 24 24" aria-hidden="true">
+        <defs>
+          <linearGradient id="g3" x1="0" x2="1">
+            <stop offset="0" stop-color="#7c5cff"/>
+            <stop offset="1" stop-color="#00c2a8"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="20" height="20" rx="5" fill="url(#g3)"/>
+        <path d="M7 13c1.5-2 4-2 6.5-1" stroke="#fff" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="brand-title">SnakeMania</span>
+      <span class="brand-tag">play • relax • compete</span>
+    </a>
 
-    <main class="dashboard">
-        <section class="dashboard-hero">
-            <div>
-                <h1 class="dashboard-title">Your Score Dashboard</h1>
-                <p class="help-text">A snapshot of recent games, best scores and progress. Data is stored locally (game sessions only).</p>
-            </div>
-            <div class="hero-actions">
-                <button id="clearHistory" class="btn btn-primary">Clear History</button>
-            </div>
-        </section>
+    <nav class="site-nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="game.html" class="nav-link">Play</a>
+    </nav>
+  </header>
 
-        <section class="stats-grid">
-            <div class="stat-card" id="statGames">
-                <div class="stat-icon">🎮</div>
-                <div class="stat-body">
-                    <div class="stat-value" id="gamesPlayed">0</div>
-                    <div class="stat-label">Games Played</div>
-                </div>
-            </div>
-            <div class="stat-card" id="statBest">
-                <div class="stat-icon">🏆</div>
-                <div class="stat-body">
-                    <div class="stat-value" id="bestScore">0</div>
-                    <div class="stat-label">Best Score</div>
-                </div>
-            </div>
-            <div class="stat-card" id="statLast">
-                <div class="stat-icon">⏱️</div>
-                <div class="stat-body">
-                    <div class="stat-value" id="lastScore">—</div>
-                    <div class="stat-label">Last Score</div>
-                </div>
-            </div>
-            <div class="stat-card" id="statRecent">
-                <div class="stat-icon">📈</div>
-                <div class="stat-body">
-                    <div class="stat-value" id="avgScore">—</div>
-                    <div class="stat-label">Average (last 5)</div>
-                </div>
-            </div>
-        </section>
+  <main class="dashboard">
+    <!-- dashboard content unchanged aside from theme -->
+    <section class="dashboard-hero">
+      <div>
+        <h1 class="dashboard-title">Score Dashboard</h1>
+        <p class="help-text">Recent games, best scores and session stats. Data is stored locally (session/history).</p>
+      </div>
+      <div class="hero-actions">
+        <button id="clearHistory" class="btn btn-primary">Clear History</button>
+      </div>
+    </section>
 
-        <section class="leaderboard">
-            <h2>Recent Scores</h2>
-            <div class="history-list" id="historyList" aria-live="polite"></div>
-            <div class="leaderboard-note help-text">Top recent games are shown here. History is capped at 100 entries.</div>
-        </section>
-    </main>
+    <section class="stats-grid">
+      <div class="stat-card" id="statGames">
+        <div class="stat-icon">🎮</div>
+        <div class="stat-body">
+          <div class="stat-value" id="gamesPlayed">0</div>
+          <div class="stat-label">Games Played</div>
+        </div>
+      </div>
+      <div class="stat-card" id="statBest">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-body">
+          <div class="stat-value" id="bestScore">0</div>
+          <div class="stat-label">Best Score</div>
+        </div>
+      </div>
+      <div class="stat-card" id="statLast">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-body">
+          <div class="stat-value" id="lastScore">—</div>
+          <div class="stat-label">Last Score</div>
+        </div>
+      </div>
+      <div class="stat-card" id="statRecent">
+        <div class="stat-icon">📈</div>
+        <div class="stat-body">
+          <div class="stat-value" id="avgScore">—</div>
+          <div class="stat-label">Average (last 5)</div>
+        </div>
+      </div>
+    </section>
 
-    <script>
-    (function(){
-        const HISTORY_KEY = 'snake_history';
-        const list = document.getElementById('historyList');
-        const clearBtn = document.getElementById('clearHistory');
+    <section class="leaderboard">
+      <h2>Recent Scores</h2>
+      <div class="history-list" id="historyList" aria-live="polite"></div>
+      <div class="leaderboard-note help-text">Top recent games (last 100 sessions).</div>
+    </section>
+  </main>
 
-        const gamesPlayedEl = document.getElementById('gamesPlayed');
-        const bestScoreEl = document.getElementById('bestScore');
-        const lastScoreEl = document.getElementById('lastScore');
-        const avgScoreEl = document.getElementById('avgScore');
+<script>
+/* same dashboard script as before — no change to logic */
+(function(){
+  const HISTORY_KEY = 'snake_history';
+  const list = document.getElementById('historyList');
+  const clearBtn = document.getElementById('clearHistory');
 
-        function _getItem(key, def = null){
-            try {
-                const raw = localStorage.getItem(key);
-                if(!raw) return def;
-                return JSON.parse(raw);
-            } catch(e){ return def; }
-        }
+  const gamesPlayedEl = document.getElementById('gamesPlayed');
+  const bestScoreEl = document.getElementById('bestScore');
+  const lastScoreEl = document.getElementById('lastScore');
+  const avgScoreEl = document.getElementById('avgScore');
 
-        function _setItem(key, value){
-            try { localStorage.setItem(key, JSON.stringify(value)); } catch(e){}
-        }
+  function _getItem(key, def = null){
+    try {
+      const raw = localStorage.getItem(key);
+      if(!raw) return def;
+      return JSON.parse(raw);
+    } catch(e){ return def; }
+  }
 
-        function loadHistory(){
-            return _getItem(HISTORY_KEY, []);
-        }
+  function loadHistory(){
+    return _getItem(HISTORY_KEY, []);
+  }
 
-        function computeStats(items){
-            const count = items.length;
-            const best = items.reduce((m, it)=> Math.max(m, (it.score||0)), 0);
-            const last = items.length ? items[items.length-1].score : null;
-            const recent = items.slice(-5);
-            const avg = recent.length ? Math.round(recent.reduce((s,i)=>s+(i.score||0),0)/recent.length) : null;
-            return { count, best, last, avg };
-        }
+  function computeStats(items){
+    const count = items.length;
+    const best = items.reduce((m, it)=> Math.max(m, (it.score||0)), 0);
+    const last = items.length ? items[items.length-1].score : null;
+    const recent = items.slice(-5);
+    const avg = recent.length ? Math.round(recent.reduce((s,i)=>s+(i.score||0),0)/recent.length) : null;
+    return { count, best, last, avg };
+  }
 
-        function render(){
-            const data = loadHistory() || [];
-            const rev = data.slice().reverse();
-            const stats = computeStats(data);
-            gamesPlayedEl.textContent = stats.count || 0;
-            bestScoreEl.textContent = stats.best || 0;
-            lastScoreEl.textContent = stats.last !== null ? stats.last : '—';
-            avgScoreEl.textContent = stats.avg !== null ? stats.avg : '—';
+  function render(){
+    const data = loadHistory() || [];
+    const rev = data.slice().reverse();
+    const stats = computeStats(data);
+    gamesPlayedEl.textContent = stats.count || 0;
+    bestScoreEl.textContent = stats.best || 0;
+    lastScoreEl.textContent = stats.last !== null ? stats.last : '—';
+    avgScoreEl.textContent = stats.avg !== null ? stats.avg : '—';
 
-            list.innerHTML = '';
-            if(rev.length === 0){
-                const empty = document.createElement('div');
-                empty.className = 'history-empty';
-                empty.innerHTML = `<div class="empty-illus">🐍</div><div class="help-text">No games yet — play and your sessions will appear here.</div>`;
-                list.appendChild(empty);
-                return;
-            }
+    list.innerHTML = '';
+    if(rev.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'history-empty';
+      empty.innerHTML = `<div class="empty-illus">🐍</div><div class="help-text">No games yet — play and your sessions will appear here.</div>`;
+      list.appendChild(empty);
+      return;
+    }
 
-            rev.slice(0, 20).forEach((item, idx)=>{
-                const el = document.createElement('div');
-                el.className = 'history-item';
-                const rank = idx + 1;
-                const when = item.date ? new Date(item.date).toLocaleString() : '';
-                el.innerHTML = `
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(90deg,#fff2,#fff0);display:flex;align-items:center;justify-content:center;font-weight:700">${rank}</div>
-                        <div>
-                            <div style="font-weight:700">${(item.name||'Unknown')}</div>
-                            <div class="meta">${when}</div>
-                        </div>
-                    </div>
-                    <div style="text-align:right; min-width:120px;">
-                        <div style="font-weight:900; font-size:1.05rem">${item.score} pts</div>
-                    </div>
-                `;
-                list.appendChild(el);
-            });
-        }
+    rev.slice(0, 20).forEach((item, idx)=>{
+      const el = document.createElement('div');
+      el.className = 'history-item';
+      const rank = idx + 1;
+      const when = item.date ? new Date(item.date).toLocaleString() : '';
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(90deg,#fff2,#fff0);display:flex;align-items:center;justify-content:center;font-weight:700">${rank}</div>
+          <div>
+            <div style="font-weight:700">${(item.name||'Unknown')}</div>
+            <div class="meta">${when}</div>
+          </div>
+        </div>
+        <div style="text-align:right; min-width:120px;">
+          <div style="font-weight:900; font-size:1.05rem">${item.score} pts</div>
+        </div>
+      `;
+      list.appendChild(el);
+    });
+  }
 
-        function clearHistory(){
-            if(!confirm('Clear score history? This cannot be undone.')) return;
-            localStorage.removeItem(HISTORY_KEY);
-            render();
-        }
+  function clearHistory(){
+    if(!confirm('Clear score history? This cannot be undone.')) return;
+    localStorage.removeItem(HISTORY_KEY);
+    render();
+  }
 
-        clearBtn.addEventListener('click', clearHistory);
-
-        render();
-    })();
-    </script>
+  clearBtn.addEventListener('click', clearHistory);
+  render();
+})();
+</script>
 </body>
 </html>

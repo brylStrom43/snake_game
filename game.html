@@ -1,70 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>SnakeMania</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SnakeMania</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+.arrow-pad {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers horizontally */
+}
+
+.arrow-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Center and add space between up arrow and bottom row */
+.arrow-row.center-up {
+  justify-content: center;
+  margin-bottom: 10px; /* increase this value for more gap */
+}
+</style>
+
+  </style>
 </head>
 <body>
-    <div class="body">
-        <header class="site-header ">
-            <div class="site-title">SnakeMania</div>
-            <nav class="site-nav">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-            </nav>
-        </header>
+  <div class="body">
+    <header class="site-header header-light">
+      <a href="index.html" class="brand">
+        <svg class="brand-mark" width="36" height="36" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="g2" x1="0" x2="1">
+              <stop offset="0" stop-color="#7c5cff"/>
+              <stop offset="1" stop-color="#00c2a8"/>
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="20" height="20" rx="5" fill="url(#g2)"/>
+          <path d="M7 13c1.5-2 4-2 6.5-1" stroke="#fff" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        </svg>
+        <span class="brand-title">SnakeMania</span>
+        <span class="brand-tag">A calm, beautiful snake game</span>
+      </a>
 
-        <main class="game-layout" role="main" aria-label="Snake game">
-            <div id="board" tabindex="0" aria-label="Game board"></div>
+      <nav class="site-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+      </nav>
+    </header>
 
-            <aside class="score-container" aria-hidden="false">
-                <div id="scoreBox" class="scoreBox">Score: 0</div>
-                <div id="hiscoreBox" class="hiscoreBox">HiScore: 0</div>
+    <main class="game-layout" role="main" aria-label="Snake game">
+      <div id="board" class="board" tabindex="0" aria-label="Game board"></div>
 
-                <div class="controls">
-                    <button id="pauseBtn" class="btn btn-secondary">Pause</button>
-                    <button id="soundBtn" class="btn btn-secondary">Sound: On</button>
-                </div>
+      <aside class="score-container" aria-hidden="false">
+        <div id="scoreBox" class="scoreBox">Score: 0</div>
+        <div id="hiscoreBox" class="hiscoreBox">High score: 0</div>
 
-                <label class="control-row">
-                    <div class="help-text">Speed</div>
-                    <input id="speedRange" type="range" min="2" max="12" step="1" value="4" />
-                </label>
-
-                <div class="mobile-controls" aria-hidden="false" role="region" aria-label="On screen controls">
-                    <button data-dir="up" class="dir-btn">▲</button>
-                    <div>
-                        <button data-dir="left" class="dir-btn">◀</button>
-                        <button data-dir="down" class="dir-btn">▼</button>
-                        <button data-dir="right" class="dir-btn">▶</button>
-                    </div>
-                </div>
-                <div class="help-text" style="margin-top:8px">Tip: Use arrow keys or on-screen controls. Game auto-starts in 1s.</div>
-            </aside>
-        </main>
-
-        <div id="toast" class="toast" aria-live="polite">+1 point</div>
-
-        <div class="decor-snake" aria-hidden="true">
-            <img src="img/snake.svg" alt="snake" onerror="this.style.display='none'" />
+        <div class="controls">
+          <button id="startBtn" class="btn btn-primary">Start</button>
+          <button id="pauseBtn" class="btn btn-secondary">Pause</button>
+          <button id="soundBtn" class="btn btn-secondary">Sound: On</button>
         </div>
 
-        <!-- Game over taunt modal -->
-        <div id="gameOverModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
-            <div class="modal-panel">
-                <img id="tauntImg" src="img/taunt.png" alt="taunt" onerror="this.style.display='none'"/>
-                <h3 id="tauntText">Ouch! Better luck next time.</h3>
-                <p id="finalScoreText" class="help-text"></p>
-                <div class="modal-actions">
-                    <button id="replayBtn" class="btn btn-primary">Play Again</button>
-                    <a href="dashboard.html" class="btn btn-secondary">View Dashboard</a>
-                </div>
+        <label class="control-row">
+          <div class="help-text">Speed</div>
+          <input id="speedRange" type="range" min="1" max="8" step="1" value="2" />
+        </label>
+
+        <!-- Updated on-screen directional pad: Up centered above the three buttons -->
+        <div class="mobile-controls" aria-hidden="false" role="region" aria-label="On screen controls">
+          <div class="arrow-pad">
+            <div class="arrow-row center-up">
+              <button class="dir-btn" data-dir="up" aria-label="Up">▲</button>
             </div>
+            <div class="arrow-row">
+              <button class="dir-btn" data-dir="left" aria-label="Left">◀</button>
+              <button class="dir-btn" data-dir="down" aria-label="Down">▼</button>
+              <button class="dir-btn" data-dir="right" aria-label="Right">▶</button>
+            </div>
+          </div>
         </div>
 
+        <div class="help-text small" style="margin-top:8px">Use the Start button or press arrow keys to begin.</div>
+      </aside>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite">+1</div>
+
+    <!-- Game over modal -->
+    <div id="gameOverModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal-panel">
+        <h3 id="gameOverTitle">Game Over</h3>
+        <p id="finalScoreText" class="help-text final-score">Final score: 0</p>
+        <div class="modal-actions">
+          <button id="replayBtn" class="btn btn-primary">Reset</button>
+          <a href="dashboard.html" class="btn btn-secondary">View Dashboard</a>
+        </div>
+      </div>
     </div>
+
+  </div>
 
 <script src="js/index.js"></script>
 </body>
